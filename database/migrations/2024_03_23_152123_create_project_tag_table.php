@@ -17,6 +17,8 @@ return new class extends Migration
 
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
+
+            $table->unique(['project_id', 'tag_id']);
         });
     }
 

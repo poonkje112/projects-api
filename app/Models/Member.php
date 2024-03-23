@@ -15,6 +15,10 @@ class Member extends Model
         'portfolio'
     ];
 
+    protected $hidden = [
+        'pivot'
+    ];
+
     public function projects()
     {
         return $this->belongsToMany(Project::class);

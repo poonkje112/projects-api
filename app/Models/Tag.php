@@ -13,6 +13,10 @@ class Tag extends Model
         'name'
     ];
 
+    protected $hidden = [
+        'pivot'
+    ];
+
     public function projects()
     {
         return $this->belongsToMany(Project::class);

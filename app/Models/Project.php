@@ -18,6 +18,10 @@ class Project extends Model
         'youtube'
     ];
 
+    protected $hidden = [
+        'pivot'
+    ];
+
     public function members()
     {
         return $this->belongsToMany(Member::class);
@@ -26,5 +30,10 @@ class Project extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function getRouteByKeyName()
+    {
+        return 'slug';
     }
 }
