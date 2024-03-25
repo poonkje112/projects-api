@@ -32,8 +32,18 @@ class Project extends Model
         return $this->belongsToMany(Tag::class);
     }
 
+    public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
+
     public function getRouteByKeyName()
     {
         return 'slug';
+    }
+
+    public function getCover() {
+        // Get the first image that is marked as a cover or the first image
+        return $this->images->firstWhere('is_cover', true) ?? $this->images->first();
     }
 }

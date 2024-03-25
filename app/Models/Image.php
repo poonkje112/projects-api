@@ -12,6 +12,10 @@ class Image extends Model
 
     protected $fillable = [
         'project_id',
+        'is_cover' => 0
+        ];
+
+    protected $hidden = [
         'path'
     ];
 
