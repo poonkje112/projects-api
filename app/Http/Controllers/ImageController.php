@@ -25,6 +25,11 @@ class ImageController extends Controller
         return $project->images;
     }
 
+    public function showProjectCover(Project $project)
+    {
+        return Storage::disk('public')->response($project->getCover()->path);
+    }
+
     public function store(Request $request)
     {
         // Check if the project exists

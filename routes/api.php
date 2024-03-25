@@ -35,6 +35,7 @@ Route::delete('/tags/{tag}', [TagController::class, 'destroy']);
 
 Route::get('/images/{id}', [ImageController::class, 'show']);
 Route::get('/images/project/{project:slug}', [ImageController::class, 'showProjectCollection']);
+Route::get('/images/project/{project:slug}/cover', [ImageController::class, 'showProjectCover']);
 Route::post('/images', [ImageController::class, 'store']);
 Route::put('/images/{id}', [ImageController::class, 'update']);
 Route::delete('/images/{id}', [ImageController::class, 'destroy']);
