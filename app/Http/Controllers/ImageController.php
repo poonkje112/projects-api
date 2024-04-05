@@ -32,6 +32,12 @@ class ImageController extends Controller
 
     public function store(Request $request)
     {
+        // Validate the request
+        $request->validate([
+            'project_slug' => 'required',
+            'image' => 'required|image'
+        ]);
+
         // Check if the project exists
         $project = Project::where('slug', $request->project_slug)->first();
 
@@ -59,6 +65,10 @@ class ImageController extends Controller
 
     public function update(Request $request, int $id)
     {
+        $request->validate([
+            'is_cover' => 'required|boolean'
+        ]);
+
         $image = Image::find($id);
 
         if (!$image) {

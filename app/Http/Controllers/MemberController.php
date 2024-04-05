@@ -9,6 +9,7 @@ class MemberController extends Controller
 {
     public function index()
     {
+        return Member::all();
     }
 
     public function show(Member $member)
@@ -18,11 +19,20 @@ class MemberController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+            'portfolio' => 'nullable|url'
+        ]);
+
         return Member::create($request->all());
     }
 
     public function update(Request $request, Member $member)
     {
+        $request->validate([
+            'name' => 'required',
+            'portfolio' => 'nullable|url'
+        ]);
         return $member->update($request->all());
     }
 
