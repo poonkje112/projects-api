@@ -22,7 +22,11 @@ class ImageController extends Controller
 
     public function showProjectCollection(Project $project)
     {
-        return $project->images;
+        // Sort by order and is_cover
+        return $project->images->sortBy([
+            ['is_cover', 'desc'],
+            ['order', 'asc']
+        ])->values();
     }
 
     public function showProjectCover(Project $project)
@@ -35,7 +39,9 @@ class ImageController extends Controller
         // Validate the request
         $request->validate([
             'project_slug' => 'required',
-            'image' => 'required|image'
+            'image' => 'required|image',
+            'is_cover' => 'nullable|boolean',
+            'order' => 'nullable|integer'
         ]);
 
         // Check if the project exists
@@ -58,6 +64,24 @@ class ImageController extends Controller
         $newImage = new Image();
         $newImage->project_id = $project->id;
         $newImage->path = $imagePath;
+
+        if ($request->is_cover && $request->is_cover === true) {
+            // Check if another image is already marked as cover
+            $coverImage = $project->images->firstWhere('is_cover', true);
+
+            // If another image is marked as cover, unmark it
+            if ($coverImage) {
+                $coverImage->is_cover = false;
+                $coverImage->save();
+            }
+
+            $newImage->is_cover = $request->is_cover;
+        }
+
+        if ($request->order) {
+            $newImage->order = $request->order;
+        }
+
         $newImage->save();
 
         return $newImage;
@@ -66,7 +90,8 @@ class ImageController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'is_cover' => 'required|boolean'
+            'is_cover' => 'nullable|boolean',
+            'order' => 'nullable|integer'
         ]);
 
         $image = Image::find($id);
@@ -75,18 +100,25 @@ class ImageController extends Controller
             return response()->json(['error' => 'Image not found'], 404);
         }
 
-        if($request->is_cover === true) {
-            // Check if another image is already marked as cover
-            $coverImage = $image->project->images->firstWhere('is_cover', true);
+        if($request->is_cover !== null) {
+            if($request->is_cover === true) {
+                // Check if another image is already marked as cover
+                $coverImage = $image->project->images->firstWhere('is_cover', true);
 
-            // If another image is marked as cover, unmark it
-            if ($coverImage) {
-                $coverImage->is_cover = false;
-                $coverImage->save();
+                // If another image is marked as cover, unmark it
+                if ($coverImage) {
+                    $coverImage->is_cover = false;
+                    $coverImage->save();
+                }
             }
+
+            $image->is_cover = $request->is_cover;   
         }
 
-        $image->is_cover = $request->is_cover;        
+        if($request->order !== null) {
+            $image->order = $request->order;
+        }
+
         $image->save();
 
         return response()->json(['message' => 'Image updated successfully'], 200);

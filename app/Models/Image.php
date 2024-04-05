@@ -12,7 +12,8 @@ class Image extends Model
 
     protected $fillable = [
         'project_id',
-        'is_cover' => 0
+        'is_cover' => 0,
+        'order' => 0,
         ];
 
     protected $hidden = [
