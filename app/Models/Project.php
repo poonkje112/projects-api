@@ -15,7 +15,8 @@ class Project extends Model
         'description',
         'git',
         'live',
-        'youtube'
+        'youtube',
+        'order' => 0
     ];
 
     protected $hidden = [

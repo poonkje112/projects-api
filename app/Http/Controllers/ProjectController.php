@@ -11,7 +11,8 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        return Project::all();
+        // Show all projects and order by order column
+        return Project::orderBy('order')->get();
     }
 
     public function show(Project $project)
@@ -30,7 +31,8 @@ class ProjectController extends Controller
             'description' => 'required',
             'youtube' => 'nullable|regex:/^[a-zA-Z0-9_-]{11}$/',
             'git' => 'nullable|url',
-            'live' => 'nullable|url'
+            'live' => 'nullable|url',
+            'order' => 'nullable|integer'
         ]);
 
         $project->slug = strtolower(str_replace(' ', '-', $request->title));
@@ -41,18 +43,29 @@ class ProjectController extends Controller
         return $project;
     }
 
-    public function update(Request $request, Project $project)
+    public function update(Project $project, Request $request)
     {
-        // Validate the request
         $request->validate([
-            'title' => 'required',
-            'description' => 'required',
+            'description' => 'nullable',
             'youtube' => 'nullable|regex:/^[a-zA-Z0-9_-]{11}$/',
             'git' => 'nullable|url',
-            'live' => 'nullable|url'
+            'live' => 'nullable|url',
+            'order' => 'nullable|integer'
         ]);
 
-        return $project->update($request->all());
+        if($request->title !== null) {
+            unset($request['title']);
+        }
+
+        $project->fill($request->all());
+
+        if($request->order !== null) {
+            $project->order = $request->order;
+        }
+
+        $project->save();
+
+        return $project;
     }
 
     public function addMember(Project $project, Member $member)
