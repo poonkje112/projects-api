@@ -3,6 +3,10 @@ set -e
 
 echo "Deployment started ..."
 
+# Add SSH key
+eval "$(ssh-agent -s)"
+ssh-add ~/vimexx_git
+
 # Enter maintenance mode or return true
 # if already is in maintenance mode
 (php artisan down) || true
